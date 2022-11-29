@@ -11,7 +11,7 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "justMyCode": false,
-            "args": ["/mnt/d/Jottacloud/Ola/Musikk/album/Röyksopp - LateNightTales- Röyksopp.cue", "/mnt/d/Jottacloud/Ola/Musikk/minidisc/toc_Air's Late Night Tales______.bin"]
+            "args": ["/mnt/d/Musikk/Late Night Tales - At The Movies - The 2010 Redux CD Version (FLAC)/joined.cue", "/mnt/c/Users/havrevol/Downloads/toc_Late Night Tales Movies_____.bin"]
         }
     ]
 }
