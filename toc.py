@@ -30,7 +30,7 @@ if __name__ == '__main__':
     # parser.add_argument("outfile", nargs='?')
     args = parser.parse_args()
 
-    seconds = read_cuefile(args.cuefile)
+    seconds = read_cuefile(Path(args.cuefile))
     groups = [round(a *  88200/512) for a in seconds]
     start = [convert(a+17600) for a in groups]
     end = [convert(a+17600-1) for a in groups[1:]]
@@ -45,40 +45,46 @@ if __name__ == '__main__':
             shutil.copy2(Path(args.binfile).absolute(), backupfile)
             break
         
-    with open(args.binfile, 'r+b')  as f:
-        f.seek(0x13c)
+    with open(Path(args.binfile), 'r+b')  as f:
+        f.seek(0x13c) # Find location of end of track
         last_track  = f.read(3)
         end_enc[-1] = last_track
-        f.seek(0x1f)
+
+        f.seek(0x1f) # Write new number of tracks
         f.write(len(end_enc).to_bytes(1,byteorder='big'))
-        f.seek(0x30)
-        f.write(bytes(range(len(start_enc)+1)))
+
+        f.seek(0x31) # Write links to track fragment map, 1 to number of tracks
+        f.write(bytes(range(1,len(start_enc)+1)))
         # start_pos = 0x130
         l = b''
         track =b''
         for a,b in zip(start_enc,end_enc):
-            l = l + a + bytes.fromhex('a6')+b +  bytes.fromhex('00')
-            track = track + bytes.fromhex('00')*6 + bytes.fromhex('01')+ bytes.fromhex('20')
+            l = l + a + bytes.fromhex('a6')+b +  bytes.fromhex('00') # Create track fragment map
+            track = track + bytes.fromhex('00')*6 + bytes.fromhex('01')+ bytes.fromhex('20') # Create timestamps map
         
-        f.seek(0x92f)
-        lastref = int.from_bytes(f.read(1),byteorder='big')
-        if lastref != 0:
-            f.seek(lastref*8 + 0x130)
-            last_fragment = f.read(7)
-            l = l + last_fragment
-            f.seek(0x92f)
-            f.write((len(end_enc) + 1).to_bytes(1,byteorder='big'))
+        # f.seek(0x92f) # Do something weird because the freemap is not linking to 0. Omit.
+        # lastref = int.from_bytes(f.read(1),byteorder='big')
+        # if lastref != 0:
+        #     f.seek(lastref*8 + 0x130)
+        #     last_fragment = f.read(7)
+        #     l = l + last_fragment
+        #     f.seek(0x92f)
+        #     f.write((len(end_enc) + 1).to_bytes(1,byteorder='big'))
         
         f.seek(0x2f)
         if not int.from_bytes(f.read(1),byteorder='big') == 255:
-            f.seek(0x2f)
+            f.seek(0x2f) # Write next free track, which is number of tracks + 1
             f.write((len(end_enc)+1).to_bytes(1,byteorder='big'))
-        f.seek(0x138)
+
+        f.seek(0x138) # Write the track fragment map
         f.write(l)
-        f.tell()
-        f.seek(0x128f)
+
+
+        f.seek(0x128f) # Write next free timestamp slot, should be unnecessary.
         f.write((len(end_enc)+1).to_bytes(1,byteorder='big'))
-        f.seek(0x1290)
+
+        f.seek(0x1290) # Write track junction map, should be unnecessary.
         f.write(bytes(range(len(start_enc))))
-        f.seek(0x1390)
+
+        f.seek(0x1390) # Write timestamps map, should be unnecessary.
         f.write(track)
