@@ -46,9 +46,16 @@ if __name__ == '__main__':
             break
         
     with open(Path(args.binfile), 'r+b')  as f:
+
+        f.seek(0x30) # Find location of freemap
+        freemap = f.read(1)
+
+        f.seek(0x13b)
+        code = f.read(1) # Read the type of track. Will be 0xA6 if it is SP stereo, 0xA2 if it is LP2.
+
         f.seek(0x13c) # Find location of end of track
-        last_track  = f.read(3)
-        end_enc[-1] = last_track
+        end_enc[-1] = f.read(3)
+        
 
         f.seek(0x1f) # Write new number of tracks
         f.write(len(end_enc).to_bytes(1,byteorder='big'))
@@ -59,7 +66,7 @@ if __name__ == '__main__':
         l = b''
         track =b''
         for a,b in zip(start_enc,end_enc):
-            l = l + a + bytes.fromhex('a6')+b +  bytes.fromhex('00') # Create track fragment map
+            l = l + a + code + b +  bytes.fromhex('00') # Create track fragment map
             track = track + bytes.fromhex('00')*6 + bytes.fromhex('01')+ bytes.fromhex('20') # Create timestamps map
         
         # f.seek(0x92f) # Do something weird because the freemap is not linking to 0. Omit.
