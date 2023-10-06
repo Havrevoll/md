@@ -21,8 +21,11 @@ if __name__ == '__main__':
         # A list of all 255 positions in fragment map. Which is free, which is taken? A function that returns the next free fragment?
         # What if a track consists of several fragments, one of them being 20 seconds long? What if I split the track in the middle of that fragment? But Track fragments are a different map than the audio fragments.
 
-        # Do: Read a cue file and find the information about each track's position.
-        # 
+        # Do:
+        # Read the toc file, close it. Keep all information in python.
+        # Read a cue file and find the information about each track's position.
+        # insert a list of new tracks, add new fragments as fitting, and also text.
+        # Write a new toc file.
 
         f.seek(0x30) # Find location of freemap
         freemap = f.read(1)
