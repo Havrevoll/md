@@ -27,6 +27,12 @@ if __name__ == '__main__':
         # insert a list of new tracks, add new fragments as fitting, and also text.
         # Write a new toc file.
 
+        data = bytearray(f.read())
+
+        # Edit the byte at index 0
+        data[0] = 0x41
+        # This code reads the contents of the file named filename in binary mode and stores it in a mutable byte array called data. You can then edit specific bytes in data by indexing it like a list. In this example, we’re changing the first byte to 0x41, which is the ASCII code for the letter ‘A’.
+
         f.seek(0x30) # Find location of freemap
         freemap = f.read(1)
 
@@ -48,3 +54,6 @@ if __name__ == '__main__':
         for a,b in zip(start_enc,end_enc):
             l = l + a + code + b +  bytes.fromhex('00') # Create track fragment map
             track = track + bytes.fromhex('00')*6 + bytes.fromhex('01')+ bytes.fromhex('20') # Create timestamps map
+
+    with open('new_filename', 'wb') as f:
+        f.write(data)
