@@ -80,7 +80,7 @@ def view_parse_tree(res):
     start = res.tree.children[0] if res.tree.children else res.tree
     return node_props(start, get_children(start.children))
 
-def find_elem(tree, name):
+def find_elem(tree, name): # Skal gjera eit rekursivt søk etter eit felt. Må nok laga ei for-løkkje, trur eg.
     for i, a in enumerate(tree['children']):
         if len(a['children']) > 0 and a['children'][0]['string'] == name:
             return a['children'][1]['string']
@@ -103,7 +103,7 @@ def cue_parse(file):
  
     res_disc_title = find_elem(tre['children'][0], "TITLE")
     res_disc_performer = find_elem(tre['children'][0], "PERFORMER")
-    res_track_number = len(tre['children'][2])
+    res_track_number = len(tre['children'][2]['children'])
     res_tracks = []
     for i in range(res_track_number):
         track_entry = tre['children'][2]['children'][i]['children']

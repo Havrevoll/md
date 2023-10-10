@@ -27,10 +27,13 @@ if __name__ == '__main__':
         # insert a list of new tracks, add new fragments as fitting, and also text.
         # Write a new toc file.
 
+        # Bitwise operations:
+        # https://realpython.com/python-bitwise-operators/#getting-a-bit
+
         data = bytearray(f.read())
 
         # Edit the byte at index 0
-        data[0] = 0x41
+        # data[0] = 0x41
         # This code reads the contents of the file named filename in binary mode and stores it in a mutable byte array called data. You can then edit specific bytes in data by indexing it like a list. In this example, we’re changing the first byte to 0x41, which is the ASCII code for the letter ‘A’.
 
         f.seek(0x30) # Find location of freemap
