@@ -29,6 +29,7 @@ if __name__ == '__main__':
 
         # Bitwise operations:
         # https://realpython.com/python-bitwise-operators/#getting-a-bit
+        # Signatures: https://github.com/asivery/netmd-tocmanip/blob/master/src/signatures.ts
 
         data = bytearray(f.read())
 
@@ -40,7 +41,7 @@ if __name__ == '__main__':
         freemap = f.read(1)
 
         f.seek(0x13b)
-        code = f.read(1) # Read the type of track. Will be 0xA6 if it is SP stereo, 0xA2 if it is LP2.
+        code = f.read(1) # Read the type of track. Will be 0xA6 if it is SP stereo, 0xA2 if it is LP2. 0x86 if it is LP4
 
         f.seek(0x13c) # Find location of end of track
         end_enc[-1] = f.read(3)
