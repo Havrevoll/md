@@ -20,9 +20,13 @@ A script for split a single track into multiple gapless tracks on a Minidisc.
 
 ## Some hints:
 The cue sheet is a list of starting times for the tracks, starting from 0:0:0, with the format:
+
 min:sec:fr <---- Attention: Colon between seconds and frames, not dots.
+
 The bin file is a binary file exported from homebrew mode in Web Minidisc Pro.
+
 The script will create a backup of the bin file before writing to it.
+
 The disc should be only one SP track, long enough to fit all the tracks in the cue sheet. Later I will add support for multiple tracks and LP2 and LP4.
 
 ## To do
